@@ -5,24 +5,95 @@
   <link rel="stylesheet" href="static/style.css">
   <link rel="stylesheet" href="static/bootstrap.min.css">
 <script>
+// Old code that doesn't work
+
+// const logout = async (e) => {
+//   // Include the code for logout here.
+//   // Build logout URL and Make GET request to logout endpoint
+//   let logout_url = window.location.origin + "/djangoapp/logout";
+
+//   const res = await fetch(logout_url, {
+//     method: "GET",
+//   });
+
+//   alert("Test: logout async function being called")
+
+//   const json = await res.json();
+//   if (json) {
+//     // Clear session storage and reload page
+//     alert("Logging out "+username+"...") 
+//     let username = sessionStorage.getItem('username');
+//     sessionStorage.removeItem('username');
+//     window.location.href = window.location.origin;
+//     window.location.reload();
+//     // Notify user of logout
+//     // alert("Logging out "+username+"...") 
+//   }
+//   else {
+//     alert("The user could not be logged out.")
+//   }
+// };
+
+// let checkSession = ()=>{
+//   let curr_user = sessionStorage.getItem("username");
+
+//   if (curr_user && curr_user !== "") {
+//     document.getElementById("loginlogout").innerHTML = 
+//     '<span class="homepage_links">' + curr_user +'</span>' +
+//     '<a class="homepage_links" onclick="logout()" href="/">Logout</a>'
+//   } else {
+//     document.getElementById("loginlogout").innerHTML = 
+//     '<a class="homepage_links" href="/login">Login</a>'+
+//     '<a class="homepage_links"  href="/register">Register</a>'
+//   }
+//  }
 
 const logout = async (e) => {
-//Include the code for logout here.
+  e.preventDefault();
+  console.log("DEBUG: Logout function called");
+  let logout_url = window.location.origin + "/djangoapp/logout";
+  console.log("DEBUG: Logout URL:", logout_url); // Log the URL
+
+  try {
+    const res = await fetch(logout_url, {
+      method: "POST",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    console.log("DEBUG: Fetch response status:", res.status, res.statusText);
+    if (!res.ok) {
+      throw new Error(`HTTP error! Status: ${res.status}`);
+    }
+    const json = await res.json();
+    console.log("DEBUG: Fetch response JSON:", json);
+    if (json && json.userName === "") {
+      let username = sessionStorage.getItem('username');
+      alert("Logging out " + (username || "user") + "...");
+      sessionStorage.removeItem('username');
+      window.location.href = window.location.origin;
+    } else {
+      alert("The user could not be logged out.");
+    }
+  } catch (error) {
+    console.error("DEBUG: Logout error:", error.message);
+    alert("Logout failed: " + error.message);
+  }
 };
 
-let checkSession = ()=>{
+let checkSession = () => {
   let curr_user = sessionStorage.getItem("username");
-
+  console.log("DEBUG: Current user:", curr_user);
   if (curr_user && curr_user !== "") {
     document.getElementById("loginlogout").innerHTML = 
-    '<span class="homepage_links">' + curr_user +'</span>' +
-    '<a class="homepage_links" onclick="logout()" href="/">Logout</a>'
+      '<span class="homepage_links">' + curr_user + '</span>' +
+      '<a class="homepage_links" onclick="logout(event)" href="#">Logout</a>';
   } else {
     document.getElementById("loginlogout").innerHTML = 
-    '<a class="homepage_links" href="/login">Login</a>'+
-    '<a class="homepage_links"  href="/register">Register</a>'
+      '<a class="homepage_links" href="/login">Login</a>' +
+      '<a class="homepage_links" href="/register">Register</a>';
   }
- }
+};
 </script>
 </head>
 <body onload="checkSession()">
