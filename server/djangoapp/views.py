@@ -14,6 +14,7 @@ from django.http import JsonResponse
 from django.contrib.auth import login, authenticate
 import logging
 import json
+import requests                         # Added by me
 from django.views.decorators.csrf import csrf_exempt
 from .populate import initiate
 
@@ -112,16 +113,30 @@ def get_dealerships(request, state="All"):
 # ...
 def get_dealer_reviews(request, dealer_id):
     # if dealer id has been provided
-    if(dealer_id):
-        endpoint = "/fetchReviews/dealer/"+str(dealer_id)
-        reviews = get_request(endpoint)
-        for review_detail in reviews:
-            response = analyze_review_sentiments(review_detail['review'])
-            print(response)
-            review_detail['sentiment'] = response['sentiment']
-        return JsonResponse({"status":200,"reviews":reviews})
-    else:
-        return JsonResponse({"status":400,"message":"Bad Request"})
+
+    # Previous Code
+    # if(dealer_id):
+    #     endpoint = "/fetchReviews/dealer/"+str(dealer_id)
+    #     reviews = get_request(endpoint)
+    #     for review_detail in reviews:
+    #         response = analyze_review_sentiments(review_detail['review'])
+    #         print(response)
+    #         review_detail['sentiment'] = response['sentiment']
+    #     return JsonResponse({"status":200,"reviews":reviews})
+    # else:
+    #     return JsonResponse({"status":400,"message":"Bad Request"})
+
+    try:
+        # Call Express API
+        response = requests.get(f'http://localhost:3030/fetchReviews/dealer/{dealer_id}')
+        if response.status_code == 200:
+            reviews = response.json()
+            return JsonResponse({'status': 200, 'reviews': reviews})
+        else:
+            return JsonResponse({'status': response.status_code, 'reviews': []})
+    except requests.RequestException as e:
+        return JsonResponse({'status': 500, 'reviews': [], 'error': str(e)})
+
 
 # Create a `get_dealer_details` view to render the dealer details
 # def get_dealer_details(request, dealer_id):
