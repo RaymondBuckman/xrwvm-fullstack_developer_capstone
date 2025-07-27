@@ -110,7 +110,7 @@ def get_dealer_reviews(request, dealer_id):
             return JsonResponse({'status': 200, 'reviews': reviews})
         else:
             return JsonResponse({
-                'status': response.status_code, 
+                'status': response.status_code,
                 'reviews': []
             })
     except requests.RequestException as e:
