@@ -21,7 +21,9 @@ def get_cars(request):
     car_models = CarModel.objects.select_related('car_make')
     cars = []
     for car_model in car_models:
-        cars.append({"CarModel": car_model.name, "CarMake": car_model.car_make.name})
+        cars.append(
+            {"CarModel": car_model.name, "CarMake": car_model.car_make.name}
+        )
     return JsonResponse({"CarModels": cars})
 
 
@@ -39,7 +41,7 @@ def login_user(request):
 
 
 def logout_request(request):
-    #  Log out the user
+    # Log out the user
     print(f"Log out the user `{request.user.username}`")
     logout(request)
     data = {"userName": ""}
@@ -48,7 +50,7 @@ def logout_request(request):
 
 @csrf_exempt
 def registration(request):
-    #  Handle sign up request
+    # Handle sign up request
     data = json.loads(request.body)
     username = data['userName']
     password = data['password']
@@ -78,7 +80,7 @@ def registration(request):
 
 
 def get_dealerships(request, state="All"):
-    #  Render list of dealerships, filtered by state if provided
+    # Render list of dealerships, filtered by state if provided
     if state == "All":
         endpoint = "/fetchDealers"
     else:
@@ -88,7 +90,7 @@ def get_dealerships(request, state="All"):
 
 
 def get_dealer_details(request, dealer_id):
-    #  Render dealer details
+    # Render dealer details
     if dealer_id:
         endpoint = f"/fetchDealer/{dealer_id}"
         dealership = get_request(endpoint)
@@ -98,9 +100,11 @@ def get_dealer_details(request, dealer_id):
 
 
 def get_dealer_reviews(request, dealer_id):
-    #  Render reviews of a dealer
+    # Render reviews of a dealer
     try:
-        response = requests.get(f'http://localhost:3030/fetchReviews/dealer/{dealer_id}')
+        response = requests.get(
+            f'http://localhost:3030/fetchReviews/dealer/{dealer_id}'
+        )
         if response.status_code == 200:
             reviews = response.json()
             return JsonResponse({'status': 200, 'reviews': reviews})
@@ -112,13 +116,15 @@ def get_dealer_reviews(request, dealer_id):
 
 @csrf_exempt
 def add_review(request):
-    #  Submit a review
+    # Submit a review
     if not request.user.is_anonymous:
         data = json.loads(request.body)
         try:
             post_review(data)
             return JsonResponse({"status": 200})
         except requests.RequestException:
-            return JsonResponse({"status": 401, "message": "Error in posting review"})
+            return JsonResponse(
+                {"status": 401, "message": "Error in posting review"}
+            )
     else:
         return JsonResponse({"status": 403, "message": "Unauthorized"})

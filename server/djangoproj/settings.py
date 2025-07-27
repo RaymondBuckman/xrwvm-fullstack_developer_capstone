@@ -10,7 +10,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/3.2/ref/settings/
 """
 
-import os
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -29,13 +28,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     'localhost',
-    'https://riskiersamos-8000.theianext-1-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai',
+    'https://riskiersamos-8000.theianext-1-labs-prod-misc-tools-us-east-0'
+    '.proxy.cognitiveclass.ai',
     '*',
 ]
 
 CSRF_TRUSTED_ORIGINS = [
-    'https://riskiersamos-8000.theianext-1-labs-prod-misc-tools-us-east-0.proxy.cognitiveclass.ai',
-    'https://riskiersamos-8000.theiadockernext-0-labs-prod-theiak8s-4-tor01.proxy.cognitiveclass.ai',
+    'https://riskiersamos-8000.theianext-1-labs-prod-misc-tools-us-east-0'
+    '.proxy.cognitiveclass.ai',
+    'https://riskiersamos-8000.theiadockernext-0-labs-prod-theiak8s-4-tor'
+    '01.proxy.cognitiveclass.ai',
 ]
 
 REST_FRAMEWORK = {

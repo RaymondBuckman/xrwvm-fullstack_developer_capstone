@@ -1,4 +1,3 @@
-from django.db import models
 from .models import CarMake, CarModel
 
 
@@ -120,3 +119,4 @@ def initiate():
             type=data["type"],
             year=data["year"]
         )
+        
